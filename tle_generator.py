@@ -30,7 +30,10 @@ def generate_tle(mdb_path, epoch_date):
     :param tle_fname: Output file name for the TLE txt file
     """
     #Choose which tables to pull from the mdb file: orbit, phase, com_el
-    sql = ["SELECT DISTINCT * FROM orbit", "SELECT DISTINCT * FROM phase", "SELECT DISTINCT * FROM com_el"] # SQL commands to operate on the mdb
+    sql = ["SELECT DISTINCT * FROM orbit", "SELECT DISTINCT * FROM phase", "SELECT DISTINCT * FROM com_el",
+           "SELECT phase.*, orbit.* FROM orbit INNER JOIN phase ON (orbit.orb_id = phase.orb_id) AND (orbit.ntc_id = phase.ntc_id)"]
+
+    # SQL commands to operate on the mdb
 
     # Run all the queries defined in sql variable on mdb store in dictionary db_dictionary, with keys Query 0, Query 1, Query 2
     opened_db = tle.open_database(mdb_path) # open mdb file
@@ -42,20 +45,31 @@ def generate_tle(mdb_path, epoch_date):
     sat_el = np.array(dict_db["Query 2"][1])
 
     # # Dataframe objects for easier viewing in the debugger
-    # orbit_pd = pd.DataFrame(orbit_data, columns=dict_db['Query 0'][0])
-    # phase_pd = pd.DataFrame(phase_data, columns=dict_db['Query 1'][0])
-    # sat_pd = pd.DataFrame(sat_el, columns=dict_db['Query 2'][0])
+    #orbit_pd = pd.DataFrame(orbit_data, columns=dict_db['Query 0'][0])
+    #phase_pd = pd.DataFrame(phase_data, columns=dict_db['Query 1'][0])
+    #sat_pd = pd.DataFrame(sat_el, columns=dict_db['Query 2'][0])
 
     # Join phase and orbit data tables
-    num_ids = np.unique(phase_data[:, 1].astype(int), return_counts=True)
+    orbit_and_phases = np.unique(phase_data[:, 1].astype(int), return_counts=True)
+    orbits = orbit_and_phases[0]
+    phases_per_orbit = orbit_and_phases[1]
+
     master_table = np.array([])
-    for i in range(len(num_ids[0])):
-        arr = np.repeat([orbit_data[num_ids[0][i] - 1, :]], num_ids[1][i], 0)
-        if not len(master_table):
-            master_table = arr
-        else:
-            master_table = np.vstack((master_table, arr))
-    master_table = np.hstack((phase_data, master_table))
+
+    #for each orbit/phase record
+    #for orbit_id in range(len(orbits)):
+    #    arr = np.repeat([orbit_data[orbits[orbit_id] - 1, :]], phases_per_orbit[orbit_id], 0)
+    #    if not len(master_table):
+    #        master_table = arr
+    #    else:
+    #        master_table = np.vstack((master_table, arr))
+    #master_table_old = np.hstack((phase_data, master_table))
+    master_table = sat_el = np.array(dict_db["Query 3"][1])
+
+    #if(master_table_old != master_table):
+    #    #THROW AN ERROR
+
+
     # master_table_pd = pd.DataFrame(master_table, columns=dict_db['Query 1'][0] + dict_db['Query 0'][0])
 
     # Generate title lines

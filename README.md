@@ -1,6 +1,11 @@
 # tle_generator
 Generate a text file of Two Line Elements (TLEs) from an ITU filing database (.mdb)
 
+## Installation
+This script requires you to copy and paste the open_source_i_n folder from KOSIA (https://github.com/kepler-space/kosia) into the root of this directory.
+
+Requires: 'numpy', 'pandas', 'scipy', 'skyfield', 'pyodbc'
+
 ## Instructions:
 At present, the ITU IFIC database MUST CONTAIN ONLY A SINGLE FILING IN IT. 
 
