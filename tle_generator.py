@@ -64,7 +64,7 @@ def generate_tle(mdb_path, epoch_date):
     #    else:
     #        master_table = np.vstack((master_table, arr))
     #master_table_old = np.hstack((phase_data, master_table))
-    master_table = sat_el = np.array(dict_db["Query 3"][1])
+    master_table = np.array(dict_db["Query 3"][1])
 
     #if(master_table_old != master_table):
     #    #THROW AN ERROR
